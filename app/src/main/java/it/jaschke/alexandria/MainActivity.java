@@ -20,7 +20,7 @@ import android.widget.Toast;
 import it.jaschke.alexandria.api.Callback;
 
 
-public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
+public class MainActivity extends ActionBarActivity implements AddBook.FragmentMessenger, ScanBook.FragmentMessenger, NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -149,6 +149,23 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 .addToBackStack("Book Detail")
                 .commit();
 
+    }
+
+    @Override
+    public void scanBarcode() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, new ScanBook())
+                .addToBackStack((String) title)
+                .commit();
+    }
+
+    @Override
+    public void returnBarcode(String barcodeInfo) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.popBackStackImmediate();
+        AddBook fragment = (AddBook) fragmentManager.findFragmentById(R.id.container);
+        fragment.barcodeEditText(barcodeInfo);
     }
 
     private class MessageReciever extends BroadcastReceiver {
